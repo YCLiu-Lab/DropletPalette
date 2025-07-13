@@ -5,7 +5,7 @@
 If you use this code, we would greatly appreciate if you cite as follows:
 
 ```
-Yuhang Sun, Yu Cheng Liu, TUFF Droplet. Spherical Symmetry Droplet Evaporation and Combustion Reaction Model for Complex Fuel Compounds. https://github.com/YCLiu-Lab/droplet_combustion_simulation1D, July 2025.
+Yuhang Sun, Yu Cheng Liu, TUFF Droplet. Spherical Symmetry Droplet Evaporation and Combustion Reaction Model for Complex Fuel Compounds. https://github.com/YCLiu-Lab/TUFFDroplet, July 2025.
 ```
 
 ---
@@ -138,7 +138,7 @@ Yuhang Sun, Yu Cheng Liu, TUFF Droplet. Spherical Symmetry Droplet Evaporation a
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/YCLiu-Lab/droplet_combustion_simulation1D.git
+   git clone https://github.com/YCLiu-Lab/TUFFDroplet.git
    cd droplet_combustion_simulation1D
    ```
 
