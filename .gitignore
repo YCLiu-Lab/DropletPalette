@@ -3,3 +3,5 @@
 *.nbi
 result/**
 .idea/**
+test.py
+.cursorrules

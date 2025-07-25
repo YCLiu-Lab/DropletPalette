@@ -47,7 +47,7 @@ class GasSolverQS:
     
     该求解器基于准稳态假设，使用膜理论计算液滴蒸发过程中的传热传质。
     """
-    def __init__(self, grid: Grid, surface: Surface, gas_inf: ct.Solution, gas_ref: ct.Solution, gas_flux: ct.Solution, liquid_flux):
+    def __init__(self, grid: Grid, surface: Surface, gas_inf: ct.Solution, gas_ref: ct.Solution, gas_flux: ct.Solution, liquid_flux,gas_velocity):
         """初始化准稳态气相求解器
         
         Args:
@@ -68,6 +68,7 @@ class GasSolverQS:
         # 获取燃料组分索引
         self.gas_fuel_indices =surface.gas_fuel_indices
         self.liquid_fuel_indices = surface.liquid_fuel_indices
+        self.gas_velocity = gas_velocity
         # 初始化计算参数
         self.calc_params = None
         self.update_calc_params()
@@ -100,12 +101,14 @@ class GasSolverQS:
         D_ref = self.gas_ref.mix_diff_coeffs_mass[self.gas_fuel_indices]@self.gas_flux.Y[self.gas_fuel_indices]
         Y_s = self.gas_surface.Y[self.gas_fuel_indices]
         Y_inf = self.gas_inf.Y[self.gas_fuel_indices]
-        B_M = (np.sum(Y_s) - np.sum(Y_inf)) / (1 - np.sum(Y_s))
-        mdot = self.grid.params.droplet_radius * self.gas_ref.density_mass * D_ref * np.log(1 + B_M)
-        # 忽略了4*pi，以和代码中其他的地方保持一致
-        # 计算各组分蒸发率
-        E_i = (Y_s - Y_inf) / B_M + Y_s
         Le = self.gas_ref.thermal_conductivity/ (self.gas_ref.cp_mass * self.gas_ref.density_mass * D_ref)
+        B_M = (np.sum(Y_s) - np.sum(Y_inf)) / (1 - np.sum(Y_s))
+
+        # 忽略了4*pi，以和代码中其他的地方保持一致
+        mdot = self.grid.params.droplet_radius * self.gas_ref.density_mass * D_ref * np.log(1 + B_M)
+
+
+
         B_T = np.exp(np.log(1 + B_M)*(self.gas_flux.cp_mass/self.gas_ref.cp_mass) / Le) - 1
         L_eff = self.gas_flux.cp_mass * (self.gas_inf.T - self.gas_surface.T) / B_T
         L_Q = L_eff - self.liquid_flux.heat_vaporization_mass
@@ -113,4 +116,7 @@ class GasSolverQS:
         dys_dr = -((np.sum(Y_s) - np.sum(Y_inf)) / self.grid.params.droplet_radius) * np.log(1 + B_M)/B_M
         Q_gas = mdot * L_eff
         Q_hv = mdot * self.liquid_flux.heat_vaporization_mass
+
+        # 计算各组分蒸发率
+        E_i = (Y_s - Y_inf) / B_M + Y_s
         self.calc_params = QSParameters(y_fs=np.sum(Y_s),B_M = B_M, B_T = B_T, E_i = E_i, Le = Le, Q_dot = Q_dot, Q_gas = Q_gas,Q_hv = Q_hv,mdot = mdot,D_ref = D_ref,rho_ref = self.gas_ref.density_mass,dys_dr = dys_dr)

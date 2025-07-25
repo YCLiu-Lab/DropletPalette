@@ -316,7 +316,8 @@ class Simulation:
                 gas_inf=self.gas_inf,
                 gas_ref=self.gas_ref,
                 gas_flux=self.gas_flux,
-                liquid_flux=self.liquid_flux
+                liquid_flux=self.liquid_flux,
+                gas_velocity=self.params.gas_velocity
             )
         else:
             self.gas_solver = GasSolver(
