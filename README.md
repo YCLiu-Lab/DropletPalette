@@ -1,11 +1,11 @@
-# 🔥 TUFFDroplet - Spherical Symmetry Droplet Evaporation and Combustion Model
+# 🔥 DropletPalette - Spherical Symmetry Droplet Evaporation and Combustion Model
 
 ## 📖 How to Cite?
 
 If you use this code, we would greatly appreciate if you cite as follows:
 
 ```
-Yuhang Sun, Yu Cheng Liu, TUFF Droplet. Spherical Symmetry Droplet Evaporation and Combustion Reaction Model for Complex Fuel Compounds. https://github.com/YCLiu-Lab/TUFFDroplet, July 2025.
+Yuhang Sun, Yu Cheng Liu, DropletPalette. Spherical Symmetry Droplet Evaporation and Combustion Reaction Model for Complex Fuel Compounds. https://github.com/YCLiu-Lab/DropletPalette, July 2025.
 ```
 
 ---
@@ -138,15 +138,15 @@ Yuhang Sun, Yu Cheng Liu, TUFF Droplet. Spherical Symmetry Droplet Evaporation a
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/YCLiu-Lab/TUFFDroplet.git
+   git clone https://github.com/YCLiu-Lab/DropletPalette.git
    cd droplet_combustion_simulation1D
    ```
 
 2. **Create a virtual environment by conda (recommended)**
    ```bash
    # Using conda
-   conda create -n tuffdroplet python=3.8
-   conda activate tuffdroplet
+   conda create -n DropletPalette python=3.8
+   conda activate DropletPalette
 
    # other environment management tools are ok
 
@@ -246,4 +246,4 @@ droplet_combustion_simulation1D/
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-*Thank you for using the TUFF Droplet project!* 🌟
+*Thank you for using the DropletPalette project!* 🌟
