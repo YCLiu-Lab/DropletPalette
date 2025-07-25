@@ -95,7 +95,10 @@ class GasSolverQS:
         # 更新参考状态
         self.gas_ref.TPX = T_ref, self.gas_ref.P, X_ref
         self.gas_flux.TPX = T_ref, self.gas_flux.P, self.gas_flux.X
-
+    def myfun_B_T(self,B_T,B_M, Sh_mod,Nu_0,Le):
+        Nu_mod = 2+(Nu_0-2)*B_T/(1+B_T)**0.7/np.log(1+B_T)
+        F = B_T+1-(1+B_M)**((Sh_mod/Le)/(Nu_mod)*(self.gas_flux.cp_mass/self.gas_ref.cp_mass))
+        return F
     def _calculate_calc_params(self):
         # 计算Spalding传质数
         D_ref = self.gas_ref.mix_diff_coeffs_mass[self.gas_fuel_indices]@self.gas_flux.Y[self.gas_fuel_indices]
@@ -103,13 +106,25 @@ class GasSolverQS:
         Y_inf = self.gas_inf.Y[self.gas_fuel_indices]
         Le = self.gas_ref.thermal_conductivity/ (self.gas_ref.cp_mass * self.gas_ref.density_mass * D_ref)
         B_M = (np.sum(Y_s) - np.sum(Y_inf)) / (1 - np.sum(Y_s))
-
+        Re = self.gas_ref.density_mass * self.gas_velocity * 2*self.grid.params.droplet_radius / self.gas_ref.viscosity
+        Pr = self.gas_ref.cp_mass * self.gas_ref.viscosity / self.gas_ref.thermal_conductivity
+        Sc = self.gas_ref.viscosity / (self.gas_ref.density_mass * D_ref)
+        if Re < 1:
+            Nu_0 = 1+(1+Re*Pr)**(1/3)
+            Sh_0 = 1+(1+Re*Sc)**(1/3)
+        elif Re >=1 and Re <=400:
+            Nu_0 = 1+(1+Re*Pr)**(1/3)*Re**0.077
+            Sh_0 = 1+(1+Re*Sc)**(1/3)*Re**0.077
+        else:
+            Nu_0 = 2+0.552*Re**0.5*Pr**(1/3)
+            Sh_0 = 2+0.552*Re**0.5*Sc**(1/3)
+        Sh_mod = 2+(Sh_0-2)/((1+B_M)**0.7*np.log(1+B_M)/B_M)
         # 忽略了4*pi，以和代码中其他的地方保持一致
-        mdot = self.grid.params.droplet_radius * self.gas_ref.density_mass * D_ref * np.log(1 + B_M)
+        mdot =1/2 * self.grid.params.droplet_radius * self.gas_ref.density_mass * D_ref * np.log(1 + B_M) * Sh_mod
+        B_T0 = np.exp(np.log(1 + B_M)*(self.gas_flux.cp_mass/self.gas_ref.cp_mass) / Le) - 1
 
-
-
-        B_T = np.exp(np.log(1 + B_M)*(self.gas_flux.cp_mass/self.gas_ref.cp_mass) / Le) - 1
+        B_T = float(fsolve(self.myfun_B_T,B_T0,args=(B_M, Sh_mod,Nu_0,Le))[0])
+        
         L_eff = self.gas_flux.cp_mass * (self.gas_inf.T - self.gas_surface.T) / B_T
         L_Q = L_eff - self.liquid_flux.heat_vaporization_mass
         Q_dot = mdot * L_Q
@@ -120,3 +135,4 @@ class GasSolverQS:
         # 计算各组分蒸发率
         E_i = (Y_s - Y_inf) / B_M + Y_s
         self.calc_params = QSParameters(y_fs=np.sum(Y_s),B_M = B_M, B_T = B_T, E_i = E_i, Le = Le, Q_dot = Q_dot, Q_gas = Q_gas,Q_hv = Q_hv,mdot = mdot,D_ref = D_ref,rho_ref = self.gas_ref.density_mass,dys_dr = dys_dr)
+    

@@ -102,6 +102,7 @@ class DataManager:
         print(f"    gas phase solver type: {self.simulation_params.gas_solver_type}")
         print(f"    flag for ignition: {self.simulation_params.flag_ignition}")
         print(f"    flag for fast solver for transient: {self.simulation_params.flag_fast_solver_for_transient}")
+        print(f"    gas velocity: {self.simulation_params.gas_velocity:.2f} m/s")
         print("="*50+"\n")
 
     def save_liquid(self, time, liquid_array, grid):
