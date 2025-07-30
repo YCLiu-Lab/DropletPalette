@@ -33,3 +33,6 @@ Chen_2016 = np.array([   0, 0, 0, 0.65, 0, 0, 0, 0, 0, 0,
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
                     0, 0, 0.25, 0, 0, 0, 0, 0, 0, 0, 
                     0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+# properties
+## liquid properties：src/solution/liquid_para
+## gas properties: src/mech/
