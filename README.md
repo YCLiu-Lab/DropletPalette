@@ -240,7 +240,7 @@ droplet_combustion_simulation1D/
 ## 📧 Contact Information
 
 - **Corresponding Email**: ycliu7@tsinghua.edu.cn
-- **Technical Support**: syh20@mails.tsinghua.edu.cn
+- **Technical Support**: syh20@mails.tsinghua.edu.cn / 18801300138 (Wechat)
 
 ## 📄 License
 
