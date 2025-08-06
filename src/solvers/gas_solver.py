@@ -15,15 +15,15 @@ from .gas_solver_Y_evap import GasSolverYEvap
 
 
 class GasSolver:
-    """气相联合求解器"""
+    """gas phase solver"""
     
     def __init__(self, grid: Grid, surface: Surface, gas_inf: ct.Solution, flag_fast_solver_for_transient: bool):
-        """初始化气相求解器
+        """initialize the gas phase solver
         
         Args:
-            grid: 网格对象
-            surface: 表面对象
-            gas_inf: 无穷远气相状态
+            grid: grid object
+            surface: surface object
+            gas_inf: infinite far gas phase state
         """
         self.grid = grid
         self.surface = surface
@@ -41,11 +41,11 @@ class GasSolver:
 
         self.three_points_scheme.update_scheme(self.grid.gas_grid.lambda_center, self._relative_velocity) 
         
-        # 更新方程参数
+        # update the equation parameters
         self.equation_property.gas_update_equation_property_T(self.gas_array_iter, self.grid, self.surface, self.gas_inf, self.three_points_scheme)
         self.equation_property.gas_update_equation_property_Y(self.gas_array_iter, self.grid, self.surface, self.gas_inf, self.three_points_scheme, self.gas_array_iter.Y)
 
-        # 创建温度场和质量分数场求解器
+        # create the temperature field and mass fraction field solver
         self.T_solver = GasSolverTEvap(grid, surface, gas_inf, self.three_points_scheme, self.equation_property,self.gas_array_iter,self._relative_velocity_right,self._relative_velocity_left,flag_fast_solver_for_transient)
         self.y_solver = GasSolverYEvap(grid, surface, gas_inf, self.three_points_scheme, self.equation_property,self.gas_array_iter,self._relative_velocity_right,self._relative_velocity_left,flag_fast_solver_for_transient)
 
@@ -60,6 +60,6 @@ class GasSolver:
 
     def update_scheme_and_equation_property(self):
         self.three_points_scheme.update_scheme(self.grid.gas_grid.lambda_center, self._relative_velocity) 
-        # 更新方程参数
+        # update the equation parameters
         self.equation_property.gas_update_equation_property_T(self.gas_array_iter, self.grid, self.surface, self.gas_inf, self.three_points_scheme)
         self.equation_property.gas_update_equation_property_Y(self.gas_array_iter, self.grid, self.surface, self.gas_inf, self.three_points_scheme, self.gas_array_iter.Y)

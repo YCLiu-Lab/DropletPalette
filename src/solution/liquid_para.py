@@ -441,26 +441,26 @@ def calculate_activity_coefficients(composition: np.ndarray, temperature: float)
 @numba.njit(cache=True)
 def calculate_density_mole(tao: np.ndarray, tao_035: np.ndarray,
                          tao_2: np.ndarray, tao_3: np.ndarray) -> np.ndarray:
-    """计算摩尔密度矩阵
+    """calculate the mole density matrix
     
-    计算公式:
+    calculation formula:
     rho = rho_base + C1*(1-Tr)^0.35 + C2*(1-Tr) + C3*(1-Tr)^2 + C4*(1-Tr)^3
     
-    其中:
-    - rho_base: 基准密度
-    - C1-C4: 密度计算系数
-    - Tr: 对比温度 (T/Tc)
+    where:
+    - rho_base: base density
+    - C1-C4: density calculation coefficients
+    - Tr: reduced temperature (T/Tc)
     
-    参数:
-        tao: (1-Tr)矩阵
-        tao_035: (1-Tr)^0.35矩阵
-        tao_2: (1-Tr)^2矩阵
-        tao_3: (1-Tr)^3矩阵
+    Args:
+        tao: (1-Tr) matrix
+        tao_035: (1-Tr)^0.35 matrix
+        tao_2: (1-Tr)^2 matrix
+        tao_3: (1-Tr)^3 matrix
         
-    返回:
-        np.ndarray: 摩尔密度矩阵，形状为(40,)
+    Returns:
+        np.ndarray: mole density matrix, shape (40,)
     """
-    # 计算密度矩阵
+    # calculate the density matrix
     density_matrix = (DENSITY_MOLE_BASE + 
                      DENSITY_MOLE_C1 * tao_035 + 
                      DENSITY_MOLE_C2 * tao + 
@@ -471,26 +471,26 @@ def calculate_density_mole(tao: np.ndarray, tao_035: np.ndarray,
 
 @numba.njit(cache=True)
 def calculate_cp_mole(tao: np.ndarray, T: float, T2: float, T3: float) -> np.ndarray:
-    """计算摩尔比热容矩阵
+    """calculate the mole heat capacity matrix
     
-    计算公式:
+    calculation formula:
     cp = B/(1-Tr) + C1 + C2*T + C3*T^2 + C4*T^3
     
-    其中:
-    - B: 基准比热容
-    - C1-C4: 比热容计算系数
-    - Tr: 对比温度 (T/Tc)
+    where:
+    - B: base heat capacity
+    - C1-C4: heat capacity calculation coefficients
+    - Tr: reduced temperature (T/Tc)
     
-    参数:
-        tao: (1-Tr)矩阵
-        T: 温度 (K)
-        T2: 温度平方
-        T3: 温度立方
+    Args:
+        tao: (1-Tr) matrix
+        T: temperature (K)
+        T2: temperature square
+        T3: temperature cube
         
-    返回:
-        np.ndarray: 摩尔比热容矩阵，形状为(40,)
+    Returns:
+        np.ndarray: mole heat capacity matrix, shape (40,)
     """
-    # 计算比热容矩阵
+    # calculate the heat capacity matrix
     cp_matrix = (CP_B / tao +
                 CP_C1 + 
                 CP_C2 * T + 
@@ -505,23 +505,23 @@ def calculate_cp_mole(tao: np.ndarray, T: float, T2: float, T3: float) -> np.nda
 
 @numba.njit(cache=True)
 def calculate_heat_vaporization_mole(Tr: np.ndarray, ln_1_minus_Tr: np.ndarray) -> np.ndarray:
-    """计算摩尔汽化热矩阵
+    """calculate the mole heat of vaporization matrix
     
-    计算公式:
+    calculation formula:
     H = exp(C1 + C2*ln(1-Tr) + C3*Tr*ln(1-Tr) + C4*Tr^2*ln(1-Tr))
     
-    其中:
-    - C1-C4: 汽化热计算系数
-    - Tr: 对比温度 (T/Tc)
+    where:
+    - C1-C4: heat of vaporization calculation coefficients
+    - Tr: reduced temperature (T/Tc)
     
-    参数:
-        Tr: 对比温度矩阵
-        ln_1_minus_Tr: ln(1-Tr)矩阵
+    Args:
+        Tr: reduced temperature matrix
+        ln_1_minus_Tr: ln(1-Tr) matrix
         
-    返回:
-        np.ndarray: 摩尔汽化热矩阵，形状为(40,)
+    Returns:
+        np.ndarray: mole heat of vaporization matrix, shape (40,)
     """
-    # 计算汽化热矩阵
+    # calculate the heat of vaporization matrix
     heat_matrix = np.zeros((40, ), dtype=np.float64)  # 明确指定维度和类型
     heat_matrix = np.exp(
         H_VAP_C1 + 
@@ -538,24 +538,24 @@ def calculate_heat_vaporization_mole(Tr: np.ndarray, ln_1_minus_Tr: np.ndarray) 
 
 @numba.njit(cache=True)
 def calculate_thermal_conductivity(T: float, T2: float, T3: float) -> np.ndarray:
-    """计算导热系数矩阵
+    """calculate the thermal conductivity matrix
     
-    计算公式:
+    calculation formula:
     k = C1 + C2*T + C3*T^2 + C4*T^3
     
-    其中:
-    - C1-C4: 导热系数计算系数
-    - T: 温度
+    where:
+    - C1-C4: thermal conductivity calculation coefficients
+    - T: temperature
     
-    参数:
-        T: 温度 (K)
-        T2: 温度平方
-        T3: 温度立方
+    Args:
+        T: temperature (K)
+        T2: temperature square
+        T3: temperature cube
         
-    返回:
-        np.ndarray: 导热系数矩阵，形状为(40,)
+    Returns:
+        np.ndarray: thermal conductivity matrix, shape (40,)
     """
-    # 计算导热系数矩阵
+    # calculate the thermal conductivity matrix
     k_matrix = np.zeros((40, ), dtype=np.float64)
     k_matrix = (THERMAL_CONDUCTIVITY_C1 + 
                THERMAL_CONDUCTIVITY_C2 * T + 
@@ -572,36 +572,36 @@ def calculate_thermal_conductivity(T: float, T2: float, T3: float) -> np.ndarray
 
 @numba.njit(cache=True)
 def calculate_viscosity(T: float, T2: float, T3: float) -> np.ndarray:
-    """计算粘度矩阵
+    """calculate the viscosity matrix
     
-    计算公式:
-    对于TYPE=0:
+    calculation formula:
+    if TYPE=0:
         mu = exp(C1 + C2/T + C3/T^2 + C4/T^3)
-    对于TYPE=1:
+    if TYPE=1:
         y = (C4-C5)/(T-C5) - 1
         mu = C1*exp((C2 + C3*y)*(y^(1/3)))
     
-    其中:
-    - C1-C5: 粘度计算系数
-    - T: 温度
+    where:
+    - C1-C5: viscosity calculation coefficients
+    - T: temperature
     
-    参数:
-        T: 温度 (K)
-        T2: 温度平方
-        T3: 温度立方
+    Args:
+        T: temperature (K)
+        T2: temperature square
+        T3: temperature cube
         
-    返回:
-        np.ndarray: 粘度矩阵，形状为(40,)
+    Returns:
+        np.ndarray: viscosity matrix, shape (40,)
     """
-    # 计算TYPE=0的粘度
+    # calculate the viscosity matrix for TYPE=0
     mu_type0 = np.exp(VISCOSITY_C1 + VISCOSITY_C2/T + VISCOSITY_C3/T2 + VISCOSITY_C4/T3)
     
-    # 计算TYPE=1的粘度
+    # calculate the viscosity matrix for TYPE=1
     y = (VISCOSITY_C4 - VISCOSITY_C5) / (T - VISCOSITY_C5) - 1
     y = np.where(y < 0, 0, y)
     mu_type1 = VISCOSITY_C1 * np.exp((VISCOSITY_C2 + VISCOSITY_C3 * y) * (y ** (1/3)))
     
-    # 根据TYPE选择对应的粘度
+    # select the viscosity matrix according to TYPE
     mu_matrix = np.where(VISCOSITY_TYPE == 1, mu_type1, mu_type0)
     mu_matrix[2] = 1/2 * (mu_matrix[1] + mu_matrix[3])
     mu_matrix[10:20] = mu_matrix[0:10]
@@ -609,28 +609,28 @@ def calculate_viscosity(T: float, T2: float, T3: float) -> np.ndarray:
     mu_matrix[32] = 1/2 * (mu_matrix[31] + mu_matrix[33])
     mu_matrix[34] = 1/2 * (mu_matrix[33] + mu_matrix[35])
     mu_matrix[36] = 1/2 * (mu_matrix[35] + mu_matrix[37])
-    # 确保粘度不为负值
+    # ensure the viscosity is not negative
     return np.maximum(mu_matrix, 0)
 
 @numba.njit(cache=True)
 def calculate_viscosity_mean(composition: np.ndarray, viscosity_ij: np.ndarray) -> float:
-    """计算混合物的粘度
+    """calculate the viscosity of the mixture
     
-    计算公式:
+    calculation formula:
     ln(μ_mix) = Σ(xi * ln(μi))
     
-    其中:
-    - xi: 组分i的摩尔分数
-    - μi: 组分i的粘度
+    where:
+    - xi: mole fraction of component i
+    - μi: viscosity of component i
     
-    参数:
-        composition: 组分摩尔分数数组，形状为(40,)
-        viscosity_ij: 单个组分的粘度矩阵，形状为(40,)
+    Args:
+        composition: mole fraction array of components, shape (40,)
+        viscosity_ij: viscosity matrix of single component, shape (40,)
         
-    返回:
-        float: 混合物的粘度
+    Returns:
+        float: viscosity of the mixture
     """
-    # 使用向量化操作计算混合物粘度
+    # use vectorized operation to calculate the viscosity of the mixture
     ln_viscosity = np.sum(composition * np.log(viscosity_ij))
     total_moles = np.sum(composition)
     
@@ -638,149 +638,149 @@ def calculate_viscosity_mean(composition: np.ndarray, viscosity_ij: np.ndarray) 
 
 @numba.njit(cache=True)
 def calculate_molecular_weight_mean(composition: np.ndarray) -> float:
-    """计算混合物的平均分子量
+    """calculate the average molecular weight of the mixture
     
-    计算公式:
+    calculation formula:
     M_mean = Σ(xi * Mi)
     
-    其中:
-    - xi: 组分i的摩尔分数
-    - Mi: 组分i的分子量
+    where:
+    - xi: mole fraction of component i
+    - Mi: molecular weight of component i
     
-    参数:
-        composition: 组分摩尔分数数组，形状为(40,)
+    Args:
+        composition: mole fraction array of components, shape (40,)
         
-    返回:
-        float: 平均分子量
+    Returns:
+        float: average molecular weight
     """
     return np.sum(composition * MOLECULAR_WEIGHTS)
 
 @numba.njit(cache=True)
 def calculate_density_mole_mean(composition: np.ndarray, density_mole_ij: np.ndarray) -> float:
-    """计算混合物的摩尔密度
+    """calculate the mole density of the mixture
     
-    计算公式:
+    calculation formula:
     rho_mix = Σ(xi * ρi)
     
-    其中:
-    - xi: 组分i的摩尔分数
-    - ρi: 组分i的摩尔密度
+    where:
+    - xi: mole fraction of component i
+    - ρi: mole density of component i
     
-    参数:
-        composition: 组分摩尔分数数组，形状为(40,)
-        density_mole_ij: 单个组分的摩尔密度矩阵，形状为(40,)
+    Args:
+        composition: mole fraction array of components, shape (40,)
+        density_mole_ij: mole density matrix of single component, shape (40,)
         
-    返回:
-        float: 混合物的摩尔密度
+    Returns:
+        float: mole density of the mixture
     """
     return np.sum(composition * density_mole_ij)
 
 @numba.njit(cache=True)
 def calculate_cp_mole_mean(composition: np.ndarray, cp_mole_ij: np.ndarray) -> float:
-    """计算混合物的摩尔热容
+    """calculate the mole heat capacity of the mixture
     
-    计算公式:
+    calculation formula:
     cp_mix = Σ(xi * cpi)
     
-    其中:
-    - xi: 组分i的摩尔分数
-    - cpi: 组分i的摩尔热容
+    where:
+    - xi: mole fraction of component i
+    - cpi: mole heat capacity of component i
     
-    参数:
-        composition: 组分摩尔分数数组，形状为(40,)
-        cp_mole_ij: 单个组分的摩尔热容矩阵，形状为(40,)
+    Args:
+        composition: mole fraction array of components, shape (40,)
+        cp_mole_ij: mole heat capacity matrix of single component, shape (40,)
         
-    返回:
-        float: 混合物的摩尔热容
+    Returns:
+        float: mole heat capacity of the mixture
     """
     return np.sum(composition * cp_mole_ij)
 
 @numba.njit(cache=True)
 def calculate_heat_vaporization_mole_mean(composition: np.ndarray, heat_vaporization_mole_ij: np.ndarray) -> float:
-    """计算混合物的摩尔蒸发热
+    """calculate the mole heat of vaporization of the mixture
     
-    计算公式:
+    calculation formula:
     hv_mix = Σ(xi * hvi)
     
-    其中:
-    - xi: 组分i的摩尔分数
-    - hvi: 组分i的摩尔蒸发热
+    where:
+    - xi: mole fraction of component i
+    - hvi: mole heat of vaporization of component i
     
-    参数:
-        composition: 组分摩尔分数数组，形状为(40,)
-        heat_vaporization_mole_ij: 单个组分的摩尔蒸发热矩阵，形状为(40,)
+    Args:
+        composition: mole fraction array of components, shape (40,)
+        heat_vaporization_mole_ij: mole heat of vaporization matrix of single component, shape (40,)
         
-    返回:
-        float: 混合物的摩尔蒸发热
+    Returns:
+        float: mole heat of vaporization of the mixture
     """
     return np.sum(composition * heat_vaporization_mole_ij)
 
 @numba.njit(cache=True)
 def calculate_thermal_conductivity_mean(composition: np.ndarray, thermal_conductivity_ij: np.ndarray, mass_fraction: np.ndarray) -> float:
-    """计算混合物的导热系数
+    """calculate the thermal conductivity of the mixture
     
-    计算公式:
+    calculation formula:
     k_mix = (Σ(wi/ki^2))^(-0.5)
     
-    其中:
-    - wi: 组分i的质量分数
-    - ki: 组分i的导热系数
+    where:
+    - wi: mass fraction of component i
+    - ki: thermal conductivity of component i
     
-    参数:
-        composition: 组分摩尔分数数组，形状为(40,)
-        thermal_conductivity_ij: 单个组分的导热系数矩阵，形状为(40,)
-        mass_fraction: 质量分数数组，形状为(40,)
+    Args:
+        composition: mole fraction array of components, shape (40,)
+        thermal_conductivity_ij: thermal conductivity matrix of single component, shape (40,)
+        mass_fraction: mass fraction array of components, shape (40,)
         
-    返回:
-        float: 混合物的导热系数
+    Returns:
+        float: thermal conductivity of the mixture
     """
     return (np.sum(mass_fraction * (thermal_conductivity_ij ** (-2)))) ** (-0.5)
 
 @numba.njit(cache=True)
 def calculate_vapor_pressure_mean(composition: np.ndarray, vapor_pressure_ij: np.ndarray) -> float:
-    """计算混合物的饱和蒸气压
+    """calculate the vapor pressure of the mixture
     
-    计算公式:
+    calculation formula:
     P_mix = Σ(xi * Pi)
     
-    其中:
-    - xi: 组分i的摩尔分数
-    - Pi: 组分i的饱和蒸气压
+    where:
+    - xi: mole fraction of component i
+    - Pi: vapor pressure of component i
     
-    参数:
-        composition: 组分摩尔分数数组，形状为(40,)
-        vapor_pressure_ij: 单个组分的饱和蒸气压矩阵，形状为(40,)
+    Args:
+        composition: mole fraction array of components, shape (40,)
+        vapor_pressure_ij: vapor pressure matrix of single component, shape (40,)
         
-    返回:
-        float: 混合物的饱和蒸气压
+    Returns:
+        float: vapor pressure of the mixture
     """
     return np.sum(composition * vapor_pressure_ij)
 
 @numba.njit(cache=True)
 def calculate_vapor_pressure(Tr: np.ndarray, tao: np.ndarray) -> np.ndarray:
-    """计算组分的饱和蒸气压
+    """calculate the vapor pressure of the component
     
-    计算公式:
+    calculation formula:
     P_sat = exp(C5 + (C1*(1-Tr) + C2*(1-Tr)^1.5 + C3*(1-Tr)^2.5 + C4*(1-Tr)^5) / Tr)
     
-    其中:
-    - P_sat: 饱和蒸气压 (Pa)
-    - Tr: 对比温度
-    - C1-C5: 饱和蒸气压计算系数
+    where:
+    - P_sat: vapor pressure (Pa)
+    - Tr: reduced temperature
+    - C1-C5: vapor pressure calculation coefficients
     
-    参数:
-        Tr: 对比温度
+    Args:
+        Tr: reduced temperature
         tao: (1-Tr)
         
-    返回:
-        np.ndarray: 蒸气压矩阵，形状为(40,)
+    Returns:
+        np.ndarray: vapor pressure matrix, shape (40,)
     """
-    # 计算需要的tao幂次
+    # calculate the needed tao powers
     tao_15 = tao ** 1.5
     tao_25 = tao ** 2.5
     tao_5 = tao ** 5
     
-    # 计算蒸气压矩阵
+    # calculate the vapor pressure matrix
     vapor_pressure = np.exp(
         VAPOR_PRESSURE_C5 + 
         (VAPOR_PRESSURE_C1 * tao + 
@@ -794,47 +794,47 @@ def calculate_vapor_pressure(Tr: np.ndarray, tao: np.ndarray) -> np.ndarray:
 @numba.njit(cache=True)
 def calculate_diffusion_ij(temperature: float, tao: np.ndarray, tao_035: np.ndarray,
                          tao_2: np.ndarray, tao_3: np.ndarray, T2: float, T3: float) -> np.ndarray:
-    """计算单个组分的扩散系数矩阵
+    """calculate the diffusion coefficient matrix of the component
     
-    计算公式:
+    calculation formula:
     D_ij = 8.93e-8 * (Vj^0.267 / Vi^0.433) * T / μj * 1e-4
     
-    其中:
-    - D_ij: 组分i和j之间的扩散系数
-    - Vi, Vj: 组分i和j的摩尔体积
-    - T: 温度
-    - μj: 组分j的粘度
+    where:
+    - D_ij: diffusion coefficient between component i and j
+    - Vi, Vj: molar volume of component i and j
+    - T: temperature
+    - μj: viscosity of component j
     
-    参数:
-        temperature: 温度 (K)
-        tao: (1-Tr)矩阵
-        tao_035: (1-Tr)^0.35矩阵
-        tao_2: (1-Tr)^2矩阵
-        tao_3: (1-Tr)^3矩阵
-        T2: 温度平方
-        T3: 温度立方
+    Args:
+        temperature: temperature (K)
+        tao: (1-Tr) matrix
+        tao_035: (1-Tr)^0.35 matrix
+        tao_2: (1-Tr)^2 matrix
+        tao_3: (1-Tr)^3 matrix
+        T2: temperature square
+        T3: temperature cube
         
-    返回:
-        np.ndarray: 扩散系数矩阵，形状为(4,10,4,10)
+    Returns:
+        np.ndarray: diffusion coefficient matrix, shape (4,10,4,10)
     """
-    # 计算粘度
+    # calculate the viscosity
     v_l = calculate_viscosity(temperature, T2, T3)
-    v_l_cp = v_l * 1e3  # 转换为cp单位
+    v_l_cp = v_l * 1e3  # convert to cp unit
     
-    # 计算摩尔体积
+    # calculate the molar volume
     V_bp = np.array([161.82, 184.17, 206.64, 229.23, 251.92, 274.71, 297.58, 320.54, 343.57, 366.67,  # NA hydrocarbon family
     161.38, 183.73, 206.20, 228.79, 251.48, 274.26, 297.13, 320.08, 343.11, 366.21,  # IA hydrocarbon family
     150.99, 173.28, 195.70, 218.23, 240.88, 263.62, 286.45, 309.36, 332.36, 355.42,  # CA hydrocarbon family
     122.99, 145.08, 167.33, 189.71, 212.22, 234.84, 257.55, 280.36, 303.25, 326.23  # AR hydrocarbon family
     ])
 
-    # 使用广播机制计算扩散系数
-    # 扩展V_bp的维度以进行广播
-    V_bp_i1j1 = V_bp.reshape(4, 10, 1, 1)  # 形状变为(4,10,1,1)
-    V_bp_i2j2 = V_bp.reshape(1, 1, 4, 10)  # 形状变为(1,1,4,10)
-    v_l_cp_i2j2 = v_l_cp.reshape(1, 1, 4, 10)  # 形状变为(1,1,4,10)
+    # use broadcasting to calculate the diffusion coefficient
+    # expand the dimension of V_bp for broadcasting
+    V_bp_i1j1 = V_bp.reshape(4, 10, 1, 1)  # shape changed to (4,10,1,1)
+    V_bp_i2j2 = V_bp.reshape(1, 1, 4, 10)  # shape changed to (1,1,4,10)
+    v_l_cp_i2j2 = v_l_cp.reshape(1, 1, 4, 10)  # shape changed to (1,1,4,10)
     
-    # 计算扩散系数矩阵
+    # calculate the diffusion coefficient matrix
     D_Aj_l0 = (8.93 * 1e-8 * (V_bp_i2j2 ** 0.267) / (V_bp_i1j1 ** 0.433)) \
               * temperature / v_l_cp_i2j2 * 1e-4
     
@@ -844,55 +844,55 @@ def calculate_diffusion_ij(temperature: float, tao: np.ndarray, tao_035: np.ndar
 def calculate_diffusion_mean(composition: np.ndarray, temperature: float,
                            Tr: np.ndarray, tao: np.ndarray, tao_035: np.ndarray,
                            tao_2: np.ndarray, tao_3: np.ndarray, T2: float, T3: float) -> np.ndarray:
-    """计算平均扩散系数
+    """calculate the average diffusion coefficient
     
-    计算公式:
+    calculation formula:
     D_i = (D_i_L_im^(1-xi) * D_i_L_mi^xi)
     
-    其中:
-    - D_i: 组分i的平均扩散系数
-    - D_i_L_im: 组分i在混合物中的扩散系数
-    - D_i_L_mi: 组分i在纯组分中的扩散系数
-    - xi: 组分i的摩尔分数
+    where:
+    - D_i: average diffusion coefficient of component i
+    - D_i_L_im: diffusion coefficient of component i in the mixture
+    - D_i_L_mi: diffusion coefficient of component i in the pure component
+    - xi: mole fraction of component i
     
-    参数:
-        composition: 组分摩尔分数数组，形状为(40,)
-        temperature: 温度 (K)
-        Tr: 对比温度
-        tao: (1-Tr)矩阵
-        tao_035: (1-Tr)^0.35矩阵
-        tao_2: (1-Tr)^2矩阵
-        tao_3: (1-Tr)^3矩阵
-        T2: 温度平方
-        T3: 温度立方
+    Args:
+        composition: mole fraction array of components, shape (40,)
+        temperature: temperature (K)
+        Tr: reduced temperature
+        tao: (1-Tr) matrix
+        tao_035: (1-Tr)^0.35 matrix
+        tao_2: (1-Tr)^2 matrix
+        tao_3: (1-Tr)^3 matrix
+        T2: temperature square
+        T3: temperature cube
         
-    返回:
-        np.ndarray: 平均扩散系数矩阵，形状为(40,)
+    Returns:
+        np.ndarray: average diffusion coefficient matrix, shape (40,)
     """
-    # 计算粘度
+    # calculate the viscosity
     v_l = calculate_viscosity(temperature, T2, T3)
-    v_l_m = calculate_viscosity_mean(composition, v_l)  # 计算混合物粘度
+    v_l_m = calculate_viscosity_mean(composition, v_l)  # calculate the viscosity of the mixture
     
-    # 计算摩尔体积
+    # calculate the molar volume
     rhon_bp = calculate_density_mole(tao, tao_035, tao_2, tao_3)
     V_bp = (1 / rhon_bp) * 1e3  # cm3/mol
     
-    # 计算平均摩尔体积
+    # calculate the average molar volume
     V_bp_m = np.sum(V_bp * composition)
     
-    # 计算扩散系数矩阵
+    # calculate the diffusion coefficient matrix
     D_Aj_l0 = calculate_diffusion_ij(temperature, tao, tao_035, tao_2, tao_3, T2, T3)
     
-    # 计算D_i_L_im
+    # calculate D_i_L_im
     v_l_08 = v_l ** 0.8
     D_i_L_im = np.zeros(40)
     
-    # 使用向量化操作计算D_i_L_im
+    # use vectorized operation to calculate D_i_L_im
     for i in range(4):
         for j in range(10):
             idx = i * 10 + j
             sum_term = 0.0
-            # 计算其他组分的贡献
+            # calculate the contribution of other components
             for i2 in range(4):
                 for j2 in range(10):
                     if i2 != i or j2 != j:
@@ -902,7 +902,7 @@ def calculate_diffusion_mean(composition: np.ndarray, temperature: float,
     
     D_i_L_im = D_i_L_im / (v_l_m ** 0.8)
     
-    # 计算D_i_L_mi
+    # calculate D_i_L_mi
     D_i_L_mi = (8.93 * 1e-8 * (V_bp ** 0.267) / (V_bp_m ** 0.433)) \
                * temperature / v_l * 1e-4
     

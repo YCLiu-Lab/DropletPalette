@@ -20,15 +20,15 @@ from src.core import Grid, Surface
 
 @dataclass
 class QSParameters:
-    """准稳态液滴计算参数
+    """quasi-steady droplet calculation parameters
     
     Attributes:
-        B_M: 传质数
-        B_T: 传热数
-        E_i: 各组分蒸发率
-        Le: 路易斯数
-        Q_dot: 传热速率
-        mdot: 质量通量
+        B_M: mass transfer number
+        B_T: heat transfer number
+        E_i: evaporation rate of each component
+        Le: Lewis number
+        Q_dot: heat transfer rate
+        mdot: mass flux
     """
     y_fs: float = 0.0
     B_M: float = 0.0
@@ -43,17 +43,17 @@ class QSParameters:
     dys_dr: float = 0.0
     rho_ref: float = 0.0
 class GasSolverQS:
-    """准稳态气相求解器
+    """quasi-steady gas solver
     
-    该求解器基于准稳态假设，使用膜理论计算液滴蒸发过程中的传热传质。
+    This solver is based on the quasi-steady assumption, using the film theory to calculate the heat and mass transfer during droplet evaporation.
     """
     def __init__(self, grid: Grid, surface: Surface, gas_inf: ct.Solution, gas_ref: ct.Solution, gas_flux: ct.Solution, liquid_flux,gas_velocity):
-        """初始化准稳态气相求解器
+        """initialize the quasi-steady gas solver
         
         Args:
-            grid: 网格对象
-            surface: 表面对象
-            gas_inf: 气相无穷远处状态
+            grid: grid object
+            surface: surface object
+            gas_inf: gas phase infinite far state
         """
         self.grid = grid
         self.gas_array_iter = ct.SolutionArray(grid.gas_array._phase, shape=grid.gas_array.shape)
@@ -65,11 +65,11 @@ class GasSolverQS:
         self.gas_flux = gas_flux
         self.liquid_flux = liquid_flux
         self.radius = grid.params.droplet_radius
-        # 获取燃料组分索引
+        # get the fuel component index
         self.gas_fuel_indices =surface.gas_fuel_indices
         self.liquid_fuel_indices = surface.liquid_fuel_indices
         self.gas_velocity = gas_velocity
-        # 初始化计算参数
+        # initialize the calculation parameters
         self.calc_params = None
         self.update_calc_params()
     def update_calc_params(self):
@@ -87,12 +87,12 @@ class GasSolverQS:
         self.gas_flux.TPX = self.gas_surface.T, self.gas_surface.P, evap_mole_fractions_gas
         self.liquid_flux.TPX = self.gas_surface.T, self.gas_surface.P, evap_mole_fractions_liquid
     def _calculate_reference_state(self):
-        """计算参考状态"""
-        # 计算参考温度
+        """calculate the reference state"""
+        # calculate the reference temperature
         T_ref = (2/3) * self.gas_surface.T + (1/3) * self.gas_inf.T
-        # 计算参考组分
+        # calculate the reference composition
         X_ref = (2/3) * self.gas_surface.X + (1/3) * self.gas_inf.X
-        # 更新参考状态
+        # update the reference state
         self.gas_ref.TPX = T_ref, self.gas_ref.P, X_ref
         self.gas_flux.TPX = T_ref, self.gas_flux.P, self.gas_flux.X
     def myfun_B_T(self,B_T,B_M, Sh_mod,Nu_0,Le):
@@ -100,7 +100,7 @@ class GasSolverQS:
         F = B_T+1-(1+B_M)**((Sh_mod/Le)/(Nu_mod)*(self.gas_flux.cp_mass/self.gas_ref.cp_mass))
         return F
     def _calculate_calc_params(self):
-        # 计算Spalding传质数
+        # calculate the Spalding mass transfer number
         D_ref = self.gas_ref.mix_diff_coeffs_mass[self.gas_fuel_indices]@self.gas_flux.Y[self.gas_fuel_indices]
         Y_s = self.gas_surface.Y[self.gas_fuel_indices]
         Y_inf = self.gas_inf.Y[self.gas_fuel_indices]
@@ -119,7 +119,7 @@ class GasSolverQS:
             Nu_0 = 2+0.552*Re**0.5*Pr**(1/3)
             Sh_0 = 2+0.552*Re**0.5*Sc**(1/3)
         Sh_mod = 2+(Sh_0-2)/((1+B_M)**0.7*np.log(1+B_M)/B_M)
-        # 忽略了4*pi，以和代码中其他的地方保持一致
+        # ignore 4*pi, to keep consistent with other places in the code
         mdot =1/2 * self.grid.params.droplet_radius * self.gas_ref.density_mass * D_ref * np.log(1 + B_M) * Sh_mod
         B_T0 = np.exp(np.log(1 + B_M)*(self.gas_flux.cp_mass/self.gas_ref.cp_mass) / Le) - 1
 
@@ -132,7 +132,7 @@ class GasSolverQS:
         Q_gas = mdot * L_eff
         Q_hv = mdot * self.liquid_flux.heat_vaporization_mass
 
-        # 计算各组分蒸发率
+        # calculate the evaporation rate of each component
         E_i = (Y_s - Y_inf) / B_M + Y_s
         self.calc_params = QSParameters(y_fs=np.sum(Y_s),B_M = B_M, B_T = B_T, E_i = E_i, Le = Le, Q_dot = Q_dot, Q_gas = Q_gas,Q_hv = Q_hv,mdot = mdot,D_ref = D_ref,rho_ref = self.gas_ref.density_mass,dys_dr = dys_dr)
     

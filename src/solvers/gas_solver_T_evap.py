@@ -111,25 +111,25 @@ class GasSolverTEvap:
         
    
     def gas_governing_equations(self, t: float, T: np.ndarray) -> np.ndarray:
-        """温度场控制方程右侧
+        """temperature field governing equation right side
         
         Args:
-            t: 时间
-            T: 温度向量，形状为 (n_cells,)
+            t: time
+            T: temperature vector, shape (n_cells,)
             
         Returns:
-            np.ndarray: 温度导数向量，形状为 (n_cells,)
+            np.ndarray: temperature derivative vector, shape (n_cells,)
         """
         
-        # 更新气相状态
+        # update the gas phase state
         self.gas_array_iter.TPY = T, self.gas_array_iter.P, self.gas_array_iter.Y
         self.equation_property.gas_update_equation_property_T(self.gas_array_iter, self.grid, self.surface, self.gas_inf, self.three_points_scheme)
         
-        # 重置导数向量
+        # reset the derivative vector
         self._dTdt.fill(0.0)
         self._dtdt.fill(0.0)
         
-        # 计算能量方程各项
+        # calculate the energy equation terms
         self._compute_energy_terms(
             self.gas_array_iter.density_mass,
             self.gas_array_iter.cp_mass,
@@ -151,10 +151,10 @@ class GasSolverTEvap:
             self._dTdt
         )
         
-        # 将温度导数写入结果向量
+        # write the temperature derivative into the result vector
         self._dtdt[:] = self._dTdt[:]
         
-        return self._dtdt.copy()  # 返回副本而不是直接返回数组
+        return self._dtdt.copy()  # return the copy instead of the array
     
     def solve_bdf(self, Dt: float, T0: np.ndarray) -> OdeResult:
         """using BDF method to solve the temperature governing equation
@@ -210,22 +210,22 @@ class GasSolverTEvap:
         energy_convection_term, energy_conduction_term,
         dTdt
     ):
-        """计算能量方程各项 - 向量化+JIT版本
+        """calculate the energy equation terms - vectorized + JIT version
         
-        使用numba.jit加速计算，同时采用向量化操作
+        use numba.jit to accelerate the calculation, and use vectorized operation
         """
-        # 对流项 - 向量化计算
+        # convection term - vectorized calculation
         energy_convection_term[:] = -(
             specific_enthalpy_right_upwind * temperature_right_upwind * relative_velocity_right * areas_right_boundary -
             specific_enthalpy_left_upwind * temperature_left_upwind * relative_velocity_left * areas_left_boundary
         ) / (volumes * density_mass * cp_mass)
         
-        # 导热项 - 向量化计算
+        # conduction term - vectorized calculation
         energy_conduction_term[:] = (
             thermal_conductivity_right_center * temperature_gradient_right * areas_right_boundary -
             thermal_conductivity_left_center * temperature_gradient_left * areas_left_boundary
         ) / (volumes * density_mass * cp_mass)
         
         
-        # 温度导数 - 向量化计算
+        # temperature derivative - vectorized calculation
         dTdt[:] = energy_conduction_term + energy_convection_term
