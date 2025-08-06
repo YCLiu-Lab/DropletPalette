@@ -355,7 +355,7 @@ def calculate_precompute_values(temperature: float) -> Tuple[np.ndarray, np.ndar
     T3 = T2 * T
     
     # calculate the reduced temperature (vector operation)
-    Tr = np.where(T >= TC, 0.999999, T / TC)
+    Tr = np.where(T >= 0.999999 * TC, 0.999999, T / TC)
     tao = 1 - Tr
     tao_035 = tao ** 0.35
     tao_2 = tao * tao  # use multiplication instead of power operation
