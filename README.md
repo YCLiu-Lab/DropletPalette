@@ -131,7 +131,7 @@ Yuhang Sun, Yu Cheng Liu, DropletPalette. Spherical Symmetry Droplet Evaporation
 
 ### 📋 Prerequisites
 
-- Python 3.8 or higher
+- Python 3.9 or higher
 - Git
 
 ### 🔧 Installation
@@ -145,7 +145,7 @@ Yuhang Sun, Yu Cheng Liu, DropletPalette. Spherical Symmetry Droplet Evaporation
 2. **Create a virtual environment by conda (recommended)**
    ```bash
    # Using conda
-   conda create -n DropletPalette python=3.8
+   conda create -n DropletPalette python=3.9
    conda activate DropletPalette
 
    # other environment management tools are ok
