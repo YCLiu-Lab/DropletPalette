@@ -3372,7 +3372,7 @@ reactions:
 - equation: A1C5H11 + O2 => HO2 + 0.75 A1C2H3 + 0.04 C6H6 + 0.08 C6H5 +
     0.13 C6H5CH2 + 0.12 C4H81 + 0.04 aC3H4 + 0.2 C3H6 + 0.77 C2H4 + 0.63
     CH3 + 0.16 H  # Reaction 265
-  rate-constant: {A: 1.6e+14, b: 0.0, Ea: 4.6e+05}
+  rate-constant: {A: 1.6e+14, b: 0.0, Ea: 4.6e+04}
 - equation: A1C5H11 + HO2 => H2O2 + 0.75 A1C2H3 + 0.04 C6H6 + 0.08 C6H5
     + 0.13 C6H5CH2 + 0.12 C4H81 + 0.04 aC3H4 + 0.2 C3H6 + 0.77 C2H4 + 0.63
     CH3 + 0.16 H  # Reaction 266
