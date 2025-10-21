@@ -29,8 +29,7 @@ os.environ['OPENBLAS_NUM_THREADS'] = '1'
 def main():
     case_name = "case name"  # case name
     fuel_composition = np.zeros(40)  # create an array of 40 components
-    fuel_composition[0] = 0.5  # set the molar fraction, n-hepante for example
-    fuel_composition[11] = 0.5  # set the molar fraction, n-hepante for example
+    fuel_composition[0] = 1.0  # set the molar fraction, n-hepante for example
     # create the result directory and log file
     result_dir = os.path.join("result", case_name)
     os.makedirs(result_dir, exist_ok=True)
@@ -53,15 +52,15 @@ def main():
             case_name=case_name,
             fuel_composition=fuel_composition,
             droplet_radius=7.0e-4,  # droplet radius, unit[m]
-            boundary_temperature=700.0,  # boundary temperature, unit[K]
-            initial_pressure=1.0e6,  # initial pressure, unit[Pa]
+            boundary_temperature=773.0,  # boundary temperature, unit[K]
+            initial_pressure=1.0e5,  # initial pressure, unit[Pa]
             initial_temperature=300.0,  # initial temperature, unit[K]
             liquid_cell_count=40,  # liquid phase grid count
             gas_cell_count=200,  # gas phase grid count
             initital_time_step=1E-4,  # time step, unit[s]
-            mechanism_file='Mech/zhang.yaml',  # gas phase mechanism file
+            mechanism_file='Mech/Mech_evap.yaml',  # gas phase mechanism file
             liquid_solver_type='FTCFD',  # liquid phase solver type: ITCID、FTCID、ITCFD、FTCFD
-            gas_solver_type='react',  # gas phase solver type: evap、react、Quasi_Steady
+            gas_solver_type='evap',  # gas phase solver type: evap、react、Quasi_Steady
             flag_fast_solver_for_transient=False # flag for fast solver for transient
         )
 
