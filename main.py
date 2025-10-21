@@ -27,7 +27,7 @@ os.environ['OPENBLAS_NUM_THREADS'] = '1'
 # !important: it is necessary to check the consistency of the thermodynamic mechanism file using cantera.
 
 def main():
-    case_name = "zhang"  # case name
+    case_name = "case name"  # case name
     fuel_composition = np.zeros(40)  # create an array of 40 components
     fuel_composition[0] = 0.5  # set the molar fraction, n-hepante for example
     fuel_composition[11] = 0.5  # set the molar fraction, n-hepante for example
