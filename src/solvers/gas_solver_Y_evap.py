@@ -238,7 +238,7 @@ class GasSolverYEvap:
             max_sum_idx = np.argmax(mass_fraction_sums)
             min_sum_idx = np.argmin(mass_fraction_sums)
             
-            print(f"** gas phase mass fraction range: {min_sum:.2f} (grid {min_sum_idx}) - {max_sum:.2f} (grid {max_sum_idx}), solving time: {solve_time:.2f}s")
+            print(f"** gas phase mass fraction range(except N2): {min_sum:.2f} (grid {min_sum_idx}) - {max_sum:.2f} (grid {max_sum_idx}), solving time: {solve_time:.2f}s")
         else:
             print(f"** gas phase mass fraction field solving failed")
         
