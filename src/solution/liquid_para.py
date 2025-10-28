@@ -45,8 +45,6 @@ SPECIES_NAMES = {
 }
 
 # define the critical temperature (unit: K)
-# Aspen Plus
-# AR9 725 in Aspen Plus change to 738
 TC = np.array([
     540.0783, 568.7879, 594.148, 618.0478, 638.8139, 658.2474, 675.6722, 692.4759, 706.8825, 722.3919,  # NA series
     530.3689, 559.6267, 582.831, 601.6, 634, 651.1, 664, 681, 709.9, 714.9,  # IA series
