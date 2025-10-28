@@ -1,0 +1,12 @@
+Important Notes for Mechanism Modification:
+
+When modifying reaction mechanisms, the following requirements must be strictly followed:
+
+1. Component Order Consistency: The order of components in the reaction mechanism must match the order of liquid phase components with one-to-one correspondence in names.
+
+2. N2 Positioning: N2 must be placed at the beginning of the component list, otherwise calculation results will be incorrect.
+
+3. Mapping File Update: The mapping relationships between liquid phase component names and gas phase component names must be updated in the file:
+   L:\07 github release\DropletPalette\src\solution\mapping_utils.py
+
+Failure to comply with these requirements will result in incorrect simulation results.
