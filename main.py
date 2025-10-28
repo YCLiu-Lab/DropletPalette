@@ -23,11 +23,11 @@ os.environ['OPENBLAS_NUM_THREADS'] = '1'
 # If you only need to modify the composition, you need to modify the LIQUID_SPECIES_NAMES dictionary and GAS_liquid_dict dictionary (the correspondence between liquid and gas phases) in src/utils/mapping_utils.py, and the liquid phase physical properties and liquid phase physical property calculation methods in src/solution/liquid_para.py.
 #* about the modification of gas phase composition
 # gas phase composition information is in the mech/*.yaml mechanism file
-# it is important to note that the order of the common components in the liquid and gas phases should be the same.
+# it is important to note that the order of the common components in the liquid and gas phases should be the same and N2 must be the first component(for normalization).
 # !important: it is necessary to check the consistency of the thermodynamic mechanism file using cantera.
 
 def main():
-    case_name = "case_name"  # case name
+    case_name = "case name"  # case name
     fuel_composition = np.zeros(40)  # create an array of 40 components
     fuel_composition[0] = 1.0  # set the molar fraction, n-hepante for example
     # create the result directory and log file
@@ -51,16 +51,16 @@ def main():
         params = SimulationParameters(
             case_name=case_name,
             fuel_composition=fuel_composition,
-            droplet_radius=5.5e-4,  # droplet radius, unit[m]
-            boundary_temperature=973.0,  # boundary temperature, unit[K]
+            droplet_radius=7.0e-4,  # droplet radius, unit[m]
+            boundary_temperature=773.0,  # boundary temperature, unit[K]
             initial_pressure=1.0e5,  # initial pressure, unit[Pa]
             initial_temperature=300.0,  # initial temperature, unit[K]
             liquid_cell_count=40,  # liquid phase grid count
             gas_cell_count=200,  # gas phase grid count
             initital_time_step=1E-4,  # time step, unit[s]
-            mechanism_file='mech/Mech_evap.yaml',  # gas phase mechanism file
-            liquid_solver_type='ITCID',  # liquid phase solver type: ITCID、FTCID、ITCFD、FTCFD
-            gas_solver_type='Quasi_Steady',  # gas phase solver type: evap、react、Quasi_Steady
+            mechanism_file='Mech/Mech_evap.yaml',  # gas phase mechanism file
+            liquid_solver_type='FTCFD',  # liquid phase solver type: ITCID、FTCID、ITCFD、FTCFD
+            gas_solver_type='evap',  # gas phase solver type: evap、react、Quasi_Steady
             flag_fast_solver_for_transient=False # flag for fast solver for transient
         )
 

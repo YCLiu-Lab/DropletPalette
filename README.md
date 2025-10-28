@@ -9,129 +9,34 @@ Yuhang Sun, Yu Cheng Liu, DropletPalette. Spherical Symmetry Droplet Evaporation
 ```
 
 ---
+## 🚀 Project Features
 
-## ✅ Validation Experiment Results
+- ✨ Spherical symmetry droplet evaporation model
+- 🔥 Complex fuel compound combustion reactions
+- 📊 High-precision numerical solvers and Surface solving
+- 🧪 Experimental validation support
 
-### 🔬 Single-Component Evaporation
+## 📁 Project Structure
 
-#### ⛽ n-Heptane
-
-* Simulation setting: T∞ @ 748K, P @ 1bar
-* Nomura Experiment： T∞ @ 741K, P @ 1bar
-* Chauveau Experiment：T∞ @ 748K, P @ 1bar
-
-<p align="center">
-  <img src="validation/Fig.2.1.nC7-@748K-1bar-070mm-appearance_d2d.png" alt="n-Heptane Validation Results 1" width="45%">
-  <img src="validation\Fig.2.2.nC7-@748K-1bar-070mm-appearance_K.png" alt="n-Heptane Validation Results 2" width="45%">
-</p>
-
-<p align="center">
-  <em>n-Heptane validation of normalized radius and surface temperature</em>
-</p>
-
-> Chauveau C, Birouk M, Halter F, et al. An analysis of the droplet support fiber effect on the evaporation process[J]. International Journal of Heat and Mass Transfer, 2019, 128: 885-891.
-
-> Yang J R, Wong S C. On the discrepancies between theoretical and experimental results for microgravity droplet evaporation[J]. International Journal of Heat and Mass Transfer, 2001, 44(23): 4433-4443.
-
-
-
-#### ⛽ n-Decane
-<p align="center">
-  <img src="validation/nC10-chauveau-@967K-appearance_d2d.png" alt="n-Heptane Validation Results 1" width="45%">
-  <img src="validation/nC10-chauveau-@967K-appearance_K.png" alt="n-Heptane Validation Results 2" width="45%">
-</p>
-
-<p align="center">
-  <em>n-Decane validation of normalized radius and surface temperature</em>
-</p>
-
-> Chauveau C, Birouk M, Gökalp I. An analysis of the d²-law departure during droplet evaporation in microgravity[J]. International Journal of Multiphase Flow, 2011, 37(3): 252-259.
-
-<p align="center">
-  <img src="validation/nC10-Murakami-@773K-1bar-appearance_d2d.png" alt="n-Heptane Validation Results 1" width="45%">
-  <img src="validation/nC10-Murakami-@773K-5bar-appearance_d2d.png" alt="n-Heptane Validation Results 2" width="45%">
-</p>
-
-<p align="center">
-  <em>n-Decane validation of normalized during different pressure</em>
-</p>
-
-
-
-> MURAKAMI Y, NOMURA H, SUGANUMA Y. Experimental Study on Unsteadiness of n-decane Single Droplet Evaporation and Effect of Natural Convection on Droplet Evaporation at High Pressures and Temperatures [J]. Transactions of the Japan Society for Aeronautical and Space Sciences, Aerospace Technology Japan, 2021, 19(5): 647-53.
-
-
-
-### 🔬 multi-Component Evaporation
-
-#### ⛽ n-Heptane and n-Dodecane
-
-* 50% n-Heptane + 50% n-Dodecane (volume) @673 K, 1 bar
-
-<p align="center">
-  <img src="validation\multi_component_evaporation.png" width="90%">
-</p>
-
-<p align="center">
-  <em>multi-component validation of normalized radius and surface</em>
-</p>
-<p align="center">
-  <img src="validation\multi_component_K.png" width="45%">
-  <img src="validation\multi_component_SurfaceTemp.png" width="45%">
-</p>
-
-<p align="center">
-  <em>multi-component validation of surface temperature and evaporation constant</em>
-</p>
-
-> GHASSEMI H, BAEK S W, KHAN Q S. Experimental Study on Evaporation of Kerosene Droplets at Elevated Pressures and Temperatures [J]. Combustion Science and Technology, 2006, 178(9): 1669-84.
-
-
-### 🔬 Single-Component Ignition
-#### ⛽ n-Heptane, Isooctane, n-Dodecane
-* $T> 2000 K$ as the criterion for ignition @ 1 bar
-<p align="center">
-  <img src="validation\ignition_time.png" alt="n-Heptane Validation Results 1" width="90%">
-</p>
-
-<p align="center">
-  <em>ignition time validation for n-Heptane(NA7), Isooctane(IA8), n-Dodecane(NA12) </em>
-</p>
-
-> TANABE M, BOLIK T, EIGENBROD C, et al. Spontaneous ignition of liquid droplets from a view of non-homogeneous mixture formation and transient chemical reactions [J]. Symposium (International) on Combustion, 1996, 26(1): 1637-43.
-
-### 🔬 Multi-Component Ignition
-#### ⛽ 50% n-Heptane + 50%n-Dodecane
-* $T> 2000 K$ as the criterion for ignition @ 1 bar
-<p align="center">
-  <img src="validation\ignition_time_multi.png" width="90%">
-</p>
-
-<p align="center">
-  <em>ignition time validation for 50% n-Heptane and 50% n-Dodecane </em>
-</p>
-
-> TAKEI M, TSUKAMOTO T, NIIOKA T. Ignition of blended-fuel droplet in high-temperature atmosphere [J]. Combustion and Flame, 1993, 93(1-2): 149-56.
+```
+droplet_combustion_simulation1D/
+├── src/                    # Source code directory
+│   ├── core/              # Core modules
+│   ├── solvers/           # Solvers
+│   └── solution/          # Solutions
+├── Mech/                  # Mechanism files
+├── result/                # Result outputs
+└── main.py               # Main program entry
+```
 
 ---
-## ✅ Validation for different $\frac{\Delta x}{\Delta t}$
-### 🔬 differernt $\Delta x$ and $\Delta t$
-<p align="center">
-  <img src="validation\Fig-3-2-gas_grid_validation.png" width="30%">
-  <img src="validation\Fig-3-2-liquid_grid_validation.png"width="30%" >
-  <img src="validation\Fig-3-2-time_step_validation.png"width="30%">
-</p>
-
-<p align="center">
-  <em>validation for differernt grid number and time step </em>
-</p>
 
 
 ## 🚀 Quick Start
 
 ### 📋 Prerequisites
 
-- Python 3.9 or higher
+- Python 3.10
 - Git
 
 ### 🔧 Installation
@@ -156,7 +61,6 @@ Yuhang Sun, Yu Cheng Liu, DropletPalette. Spherical Symmetry Droplet Evaporation
    ```
 
 ### 🏃‍♂️ Running the Simulation
-
 1. **Basic Usage**
    ```bash
    python main.py
@@ -215,28 +119,123 @@ Yuhang Sun, Yu Cheng Liu, DropletPalette. Spherical Symmetry Droplet Evaporation
   - in mech/**.yaml (currently includes 31 common hydrocarbon fuels)
 ---
 
-## 🚀 Project Features
+## ✅ Validation Experiment Results
 
-- ✨ Spherical symmetry droplet evaporation model
-- 🔥 Complex fuel compound combustion reactions
-- 📊 High-precision numerical solvers and Surface solving
-- 🧪 Experimental validation support
+### 🔬 Single-Component Evaporation
 
-## 📁 Project Structure
+#### ⛽ n-Heptane
 
-```
-droplet_combustion_simulation1D/
-├── src/                    # Source code directory
-│   ├── core/              # Core modules
-│   ├── solvers/           # Solvers
-│   └── solution/          # Solutions
-├── mech/                  # Mechanism files
-├── result/                # Result outputs
-└── main.py               # Main program entry
-```
+* Simulation setting: T∞ @ 748K, P @ 1bar
+* Nomura Experiment： T∞ @ 741K, P @ 1bar
+* Chauveau Experiment：T∞ @ 748K, P @ 1bar
+
+<p align="center">
+  <img src="validation/Fig.2.1.nC7-@748K-1bar-070mm-appearance_d2d.png" alt="n-Heptane Validation Results 1" width="40%">
+  <img src="validation\Fig.2.2.nC7-@748K-1bar-070mm-appearance_K.png" alt="n-Heptane Validation Results 2" width="40%">
+</p>
+
+<p align="center">
+  <em>n-Heptane validation of normalized radius and surface temperature</em>
+</p>
+
+> Chauveau C, Birouk M, Halter F, et al. An analysis of the droplet support fiber effect on the evaporation process[J]. International Journal of Heat and Mass Transfer, 2019, 128: 885-891.
+
+> Yang J R, Wong S C. On the discrepancies between theoretical and experimental results for microgravity droplet evaporation[J]. International Journal of Heat and Mass Transfer, 2001, 44(23): 4433-4443.
+
+
+
+#### ⛽ n-Decane
+<p align="center">
+  <img src="validation/nC10-chauveau-@967K-appearance_d2d.png" alt="n-Heptane Validation Results 1" width="40%">
+  <img src="validation/nC10-chauveau-@967K-appearance_K.png" alt="n-Heptane Validation Results 2" width="40%">
+</p>
+
+<p align="center">
+  <em>n-Decane validation of normalized radius and surface temperature</em>
+</p>
+
+> Chauveau C, Birouk M, Gökalp I. An analysis of the d²-law departure during droplet evaporation in microgravity[J]. International Journal of Multiphase Flow, 2011, 37(3): 252-259.
+
+<p align="center">
+  <img src="validation/nC10-Murakami-@773K-1bar-appearance_d2d.png" alt="n-Heptane Validation Results 1" width="40%">
+  <img src="validation/nC10-Murakami-@773K-5bar-appearance_d2d.png" alt="n-Heptane Validation Results 2" width="40%">
+</p>
+
+<p align="center">
+  <em>n-Decane validation of normalized during different pressure</em>
+</p>
+
+
+
+> MURAKAMI Y, NOMURA H, SUGANUMA Y. Experimental Study on Unsteadiness of n-decane Single Droplet Evaporation and Effect of Natural Convection on Droplet Evaporation at High Pressures and Temperatures [J]. Transactions of the Japan Society for Aeronautical and Space Sciences, Aerospace Technology Japan, 2021, 19(5): 647-53.
+
+
+
+### 🔬 multi-Component Evaporation
+
+#### ⛽ n-Heptane and n-Dodecane
+
+* 50% n-Heptane + 50% n-Dodecane (volume) @673 K, 1 bar
+
+<p align="center">
+  <img src="validation\multi_component_evaporation.png" width="40%">
+</p>
+
+<p align="center">
+  <em>multi-component validation of normalized radius and surface</em>
+</p>
+<p align="center">
+  <img src="validation\multi_component_K.png" width="40%">
+  <img src="validation\multi_component_SurfaceTemp.png" width="40%">
+</p>
+
+<p align="center">
+  <em>multi-component validation of surface temperature and evaporation constant</em>
+</p>
+
+> GHASSEMI H, BAEK S W, KHAN Q S. Experimental Study on Evaporation of Kerosene Droplets at Elevated Pressures and Temperatures [J]. Combustion Science and Technology, 2006, 178(9): 1669-84.
+
+
+### 🔬 Single-Component Ignition
+#### ⛽ n-Heptane, Isooctane, n-Dodecane
+* $T> 2000 K$ as the criterion for ignition @ 1 bar
+<p align="center">
+  <img src="validation\ignition_time.png" alt="n-Heptane Validation Results 1" width="40%">
+</p>
+
+<p align="center">
+  <em>ignition time validation for n-Heptane(NA7), Isooctane(IA8), n-Dodecane(NA12) </em>
+</p>
+
+> TANABE M, BOLIK T, EIGENBROD C, et al. Spontaneous ignition of liquid droplets from a view of non-homogeneous mixture formation and transient chemical reactions [J]. Symposium (International) on Combustion, 1996, 26(1): 1637-43.
+
+### 🔬 Multi-Component Ignition
+#### ⛽ 50% n-Heptane + 50%n-Dodecane
+* $T> 2000 K$ as the criterion for ignition @ 1 bar
+<p align="center">
+  <img src="validation\ignition_time_multi.png" width="40%">
+</p>
+
+<p align="center">
+  <em>ignition time validation for 50% n-Heptane and 50% n-Dodecane </em>
+</p>
+
+> TAKEI M, TSUKAMOTO T, NIIOKA T. Ignition of blended-fuel droplet in high-temperature atmosphere [J]. Combustion and Flame, 1993, 93(1-2): 149-56.
 
 ---
+## ✅ Validation for different $\frac{\Delta x}{\Delta t}$
+### 🔬 differernt $\Delta x$ and $\Delta t$
+<p align="center">
+  <img src="validation\Fig-3-2-gas_grid_validation.png" width="30%">
+  <img src="validation\Fig-3-2-liquid_grid_validation.png"width="30%" >
+  <img src="validation\Fig-3-2-time_step_validation.png"width="30%">
+</p>
 
+<p align="center">
+  <em>validation for differernt grid number and time step </em>
+</p>
+
+---
 ## 📧 Contact Information
 
 - **Corresponding Email**: ycliu7@tsinghua.edu.cn
