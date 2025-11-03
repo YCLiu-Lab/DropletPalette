@@ -77,6 +77,11 @@ class Surface:
         self.temperature = None
         self.heat_flux = None
         self.mass_flux = None
+        self.standard_deviation = None
+        self.alpha = None
+        self.beta = None
+        self.I_ini = None
+        self.mean_molecular_weight = None
         self.state = SurfaceState(temperature=self.liquid_surface.temperature)
         self._precompute_indices()
         self.initialize_gas_surface_state()
@@ -143,3 +148,70 @@ class Surface:
                 gas_mole_fractions[self.gas_non_fuel_indices] *= scale_factor
         # final normalization
         return gas_mole_fractions / np.sum(gas_mole_fractions)
+    
+    def calculate_gas_surface_continuous_distribution(self):
+        """
+        calculate the gas phase surface continuous distribution.
+        
+        This function includes:
+        1. calculate_equivalent_liquid_continuous_distribution: calculate equivalent liquid phase continuous distribution
+        2. calculate_equivalent_gas_continuous_distribution: calculate equivalent gas phase continuous distribution
+        3. calculate_equivalent_liquid_and_standard_deviation_change: calculate equivalent liquid phase and standard deviation change
+        4. calculate_equivalent_gas_and_standard_deviation_change: calculate equivalent gas phase and standard deviation change
+        
+        Returns:
+            np.ndarray: gas phase surface continuous distribution
+        """
+        # 计算等效液相连续分布
+        equivalent_liquid_distribution = self.calculate_equivalent_liquid_continuous_distribution()
+        
+        # 计算等效气相连续分布
+        equivalent_gas_distribution = self.calculate_equivalent_gas_continuous_distribution()
+        
+        # 计算等效液相和标准差变化
+        liquid_std_change = self.calculate_equivalent_liquid_and_standard_deviation_change()
+        
+        # 计算等效气相和标准差变化
+        gas_std_change = self.calculate_equivalent_gas_and_standard_deviation_change()
+        
+        return equivalent_gas_distribution
+    
+    def calculate_equivalent_liquid_continuous_distribution(self):
+        """
+        calculate equivalent liquid phase continuous distribution.
+        
+        Returns:
+            np.ndarray: equivalent liquid phase continuous distribution
+        """
+        # TODO: implement this function
+        return np.zeros(len(self.liquid_surface.composition))
+    
+    def calculate_equivalent_gas_continuous_distribution(self):
+        """
+        calculate equivalent gas phase continuous distribution.
+        
+        Returns:
+            np.ndarray: equivalent gas phase continuous distribution
+        """
+        # TODO: implement this function
+        return np.zeros(len(self.gas_surface.Y))
+    
+    def calculate_equivalent_liquid_and_standard_deviation_change(self):
+        """
+        calculate equivalent liquid phase and standard deviation change.
+        
+        Returns:
+            float: standard deviation change for liquid phase
+        """
+        # TODO: implement this function
+        return 0.0
+    
+    def calculate_equivalent_gas_and_standard_deviation_change(self):
+        """
+        calculate equivalent gas phase and standard deviation change.
+        
+        Returns:
+            float: standard deviation change for gas phase
+        """
+        # TODO: implement this function
+        return 0.0

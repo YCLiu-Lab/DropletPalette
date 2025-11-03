@@ -87,6 +87,8 @@ class SimulationParameters:
     gas_velocity: float = 0.0
     flag_ignition: bool = False
     flag_fast_solver_for_transient: bool = False
+    standard_deviation: Optional[float] = None
+    I_ini: Optional[float] = None
 
 @dataclass
 class TemperatureChangeTracker:
@@ -269,6 +271,8 @@ class Simulation:
             gas_surface=self.gas_surface,
             liquid_surface=self.liquid_surface
         )
+        self.surface.standard_deviation = self.params.standard_deviation
+        self.surface.I_ini = self.params.I_ini
         
         # initialize data_manager
         self.data_manager = DataManager(

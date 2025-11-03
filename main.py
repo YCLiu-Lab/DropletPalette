@@ -27,9 +27,10 @@ os.environ['OPENBLAS_NUM_THREADS'] = '1'
 # !important: it is necessary to check the consistency of the thermodynamic mechanism file using cantera.
 
 def main():
-    case_name = "case name"  # case name
+    case_name = "nC7_C16"  # case name
     fuel_composition = np.zeros(40)  # create an array of 40 components
-    fuel_composition[0] = 1.0  # set the molar fraction, n-hepante for example
+    fuel_composition[0] = 0.5  # set the molar fraction, n-hepante for example
+    fuel_composition[9] = 0.5  # set the molar fraction, n-hexadecane for example
     # create the result directory and log file
     result_dir = os.path.join("result", case_name)
     os.makedirs(result_dir, exist_ok=True)
@@ -59,9 +60,11 @@ def main():
             gas_cell_count=200,  # gas phase grid count
             initital_time_step=1E-4,  # time step, unit[s]
             mechanism_file='Mech/Mech_evap.yaml',  # gas phase mechanism file
-            liquid_solver_type='FTCFD',  # liquid phase solver type: ITCID、FTCID、ITCFD、FTCFD
+            liquid_solver_type='ITCID',  # liquid phase solver type: ITCID、FTCID、ITCFD、FTCFD
             gas_solver_type='evap',  # gas phase solver type: evap、react、Quasi_Steady
-            flag_fast_solver_for_transient=False # flag for fast solver for transient
+            flag_fast_solver_for_transient=False, # flag for fast solver for transient
+            standard_deviation=28.5,  # standard deviation for surface
+            I_ini=86.0  # initial I value for surface
         )
 
         # create simulation instance
