@@ -269,10 +269,11 @@ class Simulation:
         self.surface = Surface(
             grid=self.grid,
             gas_surface=self.gas_surface,
-            liquid_surface=self.liquid_surface
+            liquid_surface=self.liquid_surface,
+            standard_deviation=self.params.standard_deviation,
+            I_ini=self.params.I_ini
         )
-        self.surface.standard_deviation = self.params.standard_deviation
-        self.surface.I_ini = self.params.I_ini
+
         
         # initialize data_manager
         self.data_manager = DataManager(
@@ -422,7 +423,7 @@ class Simulation:
             
             # update the gas phase surface state
             self.gas_surface.TPY = self.gas_surface.T, self.gas_surface.P, self.gas_array[0].Y
-            self.gas_surface.TPX = self.gas_surface.T, self.gas_surface.P, self.surface.calculate_gas_surface_composition()
+            self.gas_surface.TPX = self.gas_surface.T, self.gas_surface.P, self.surface.calculate_gas_surface_continuous_distribution()
             
             # update the grid
             self.grid.reset_grid()
@@ -530,7 +531,7 @@ class Simulation:
             # update the liquid phase surface state
             self.liquid_surface.TPY(T_interface, self.liquid_array.P[-1], self.liquid_array.Y[-1])
             # update the gas phase surface state
-            self.gas_surface.TPX = T_interface, self.liquid_surface.pressure, self.surface.calculate_gas_surface_composition()
+            self.gas_surface.TPX = T_interface, self.liquid_surface.pressure, self.surface.calculate_gas_surface_continuous_distribution()
             # calculate the gas phase relative velocity
             self.calculate_gas_relative_velocity(gas_stefan_velocity)
             # solve the gas phase temperature
@@ -602,6 +603,7 @@ class Simulation:
             "stefan_velocity_liquid": stefan_velocity_liquid,
             "interface_diffusion_flux_gas": interface_diffusion_flux_gas,
             "evaporation_rate_liquid": evaporation_rate_liquid,
+            "delta_mass_rate_liquid_scalar": QS_calc_params.mdot,
             "heat_flux_liquid": heat_flux_liquid,
             "heat_flux_gas": heat_flux_gas,
             "evaporation_heat_flux": evaporation_heat_flux
@@ -616,13 +618,75 @@ class Simulation:
             interface_params (dict): 界面参数
         """
         self.liquid_surface.TPY(T_interface, self.liquid_array.P[-1], self.liquid_array.Y[-1])
-        self.gas_surface.TPX = T_interface, self.liquid_surface.pressure, self.surface.calculate_gas_surface_composition()
+        self.gas_surface.TPX = T_interface, self.liquid_surface.pressure, self.surface.calculate_gas_surface_continuous_distribution()
 
         self.droplet_params.mass_new = interface_params["new_mass_liquid"]
         self.droplet_params.mass_i_new = interface_params["new_mass_i_liquid"]
 
         old_stefan_velocity_gas = self.surface.state.stefan_velocity_gas
         old_stefan_velocity_liquid = self.surface.state.stefan_velocity_liquid
+        
+        # 更新液相连续分布的均值和标准差（基于均值守恒和二阶矩守恒）
+        # 首先保存旧值（在更新之前）
+        m_l_old = self.droplet_params.mass  # 旧质量
+        m_l_new = self.droplet_params.mass  # 新质量
+        I_bar_l_old = self.surface.liquid_mean  # 旧均值
+        sigma_l_old = self.surface.liquid_standard_deviation  # 旧标准差
+        print(f"m_l_old: {m_l_old}, I_bar_l_old: {I_bar_l_old}, sigma_l_old: {sigma_l_old}")
+        # 确保气相连续分布参数已计算
+        if self.surface.gas_mean is None or self.surface.gas_standard_deviation is None:
+            self.surface.calculate_equivalent_gas_continuous_distribution()
+        
+        # 质量流率（单位：kg/s）和时间步长
+        mdot = interface_params["delta_mass_rate_liquid_scalar"]
+        dt = self.runtime.time_step
+        m_l_new = m_l_old - mdot * dt
+        print(f"mdot: {mdot}, dt: {dt},m_l_new: {m_l_new}, ")
+        # 1. 使用均值守恒计算新的液相均值
+        # 旧的液相摩尔数 = 液相质量 / 液相分子量均值
+        n_l_old = m_l_old / I_bar_l_old if (I_bar_l_old and I_bar_l_old > 0) else 0.0
+        print(f"n_l_old: {n_l_old}")
+        # 蒸发掉的摩尔数 = mdot * dt / 气相分子量均值
+        n_evap = (mdot * dt / self.surface.gas_mean) if (self.surface.gas_mean and self.surface.gas_mean > 0) else 0.0
+        print(f"n_evap: {n_evap}")
+        # 新的液相摩尔数 = 旧的液相摩尔数 - 蒸发掉的摩尔数
+        n_l_new = n_l_old - n_evap
+        print(f"n_l_new: {n_l_new}")
+        # 新的液相分子量均值 = 新的液相质量 / 新的液相摩尔数
+        if n_l_new > 0:
+            I_bar_l_new = m_l_new / n_l_new
+            self.surface.liquid_mean = I_bar_l_new
+        else:
+            # 如果新摩尔数为0，保持旧均值
+            I_bar_l_new = I_bar_l_old
+            self.surface.liquid_mean = I_bar_l_new
+        print(f"I_bar_l_new: {I_bar_l_new}")
+        # 2. 使用二阶矩守恒计算新的液相标准差
+        # M_{2,l} = Ī_l² + σ_l²
+        M2_l_old = I_bar_l_old ** 2 + sigma_l_old ** 2
+        
+        # 计算气相的二阶矩
+        # M_{2,g} = Ī_g² + σ_g²
+        M2_g = self.surface.gas_mean ** 2 + self.surface.gas_standard_deviation ** 2 if (
+            self.surface.gas_mean and self.surface.gas_standard_deviation
+        ) else 0.0
+        
+        # 计算通量项：ṅ(M₂)_{flux} = (ṁ / Ī_g) * M_{2,g}
+        if self.surface.gas_mean and self.surface.gas_mean > 0:
+            flux_nM2 = (mdot / self.surface.gas_mean) * M2_g
+        else:
+            flux_nM2 = 0.0
+        
+        # 二阶矩守恒：n_l_new * M_{2,l,new} = n_l_old * M_{2,l,old} - ṅ(M₂)_{flux} * dt
+        nM2_l_old = n_l_old * M2_l_old
+        nM2_l_new = nM2_l_old - flux_nM2 * dt
+        
+        # 计算新的二阶矩：M_{2,l,new} = (nM₂)_new / n_l_new
+        M2_l_new = nM2_l_new / n_l_new
+        # 计算新的标准差：σ_l_new = sqrt(M_{2,l,new} - Ī_l_new²)
+        sigma_l_new_squared = M2_l_new - I_bar_l_new ** 2
+        self.surface.liquid_standard_deviation = np.sqrt(sigma_l_new_squared)
+        
         self.surface.state = type(self.surface.state)(
             temperature=T_interface,
             stefan_velocity_liquid=interface_params["stefan_velocity_liquid"],
@@ -636,6 +700,7 @@ class Simulation:
             heat_flux_gas=interface_params["heat_flux_gas"],
             evaporation_heat_flux=interface_params["evaporation_heat_flux"]
         )
+        
 
     def _compute_interface_equilibrium(self):
         """
@@ -745,6 +810,7 @@ class Simulation:
             "stefan_velocity_liquid": stefan_velocity_liquid,
             "interface_diffusion_flux_gas": interface_diffusion_flux_gas,
             "evaporation_rate_liquid": evaporation_rate_liquid,
+            "delta_mass_rate_liquid_scalar": delta_mass_rate_liquid_scalar,
             "heat_flux_liquid": heat_flux_liquid,
             "heat_flux_gas": heat_flux_gas,
             "evaporation_heat_flux": evaporation_heat_flux

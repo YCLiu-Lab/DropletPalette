@@ -61,9 +61,9 @@ def main():
             initital_time_step=1E-4,  # time step, unit[s]
             mechanism_file='Mech/Mech_evap.yaml',  # gas phase mechanism file
             liquid_solver_type='ITCID',  # liquid phase solver type: ITCID、FTCID、ITCFD、FTCFD
-            gas_solver_type='evap',  # gas phase solver type: evap、react、Quasi_Steady
+            gas_solver_type='Quasi_Steady',  # gas phase solver type: evap、react、Quasi_Steady
             flag_fast_solver_for_transient=False, # flag for fast solver for transient
-            standard_deviation=28.5,  # standard deviation for surface
+            standard_deviation=20.0,  # standard deviation for surface
             I_ini=86.0  # initial I value for surface
         )
 
