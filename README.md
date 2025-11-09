@@ -5,7 +5,7 @@
 If you use this code, we would greatly appreciate if you cite as follows:
 
 ```
-Yuhang Sun, Yu Cheng Liu, DropletPalette. Spherical Symmetry Droplet Evaporation and Combustion Reaction Model for Complex Fuel Compounds. https://github.com/YCLiu-Lab/DropletPalette, July 2025.
+Sun, Y., & Liu, Y. C. (2025). DropletPalette: Spherical Symmetry Droplet Evaporation and Combustion Model for Complex Fuel Compounds (v1.0.1). Zenodo. https://doi.org/10.5281/zenodo.17566401
 ```
 
 ---
