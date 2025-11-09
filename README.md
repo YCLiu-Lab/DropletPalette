@@ -8,6 +8,30 @@ If you use this code, we would greatly appreciate if you cite as follows:
 Sun, Y., & Liu, Y. C. (2025). DropletPalette: Spherical Symmetry Droplet Evaporation and Combustion Model for Complex Fuel Compounds (v1.0.1). Zenodo. https://doi.org/10.5281/zenodo.17566401
 ```
 
+bib file
+```
+@software{DropletPalette2025,
+  author       = {Sun, Yuhang and
+                  Liu, Yu Cheng},
+  title        = {DropletPalette: Spherical Symmetry Droplet
+                   Evaporation and Combustion Model for Complex Fuel
+                   Compounds
+                  },
+  month        = nov,
+  year         = 2025,
+  publisher    = {Zenodo},
+  version      = {v1.0.1},
+  doi          = {10.5281/zenodo.17566401},
+  url          = {https://doi.org/10.5281/zenodo.17566401},
+  swhid        = {swh:1:dir:ffce60e111e614384f0c1118bafa1e1d116d0f47
+                   ;origin=https://doi.org/10.5281/zenodo.17566400;vi
+                   sit=swh:1:snp:fd32c171c6fcb11bc3d28e3c8611d8a10647
+                   6fb9;anchor=swh:1:rel:85f8eeab57494ca9c8921bb1522f
+                   cb91b71a6a93;path=YCLiu-Lab-DropletPalette-9eacbfa
+                  },
+  note         = {Available at: \url{https://github.com/YCLiu-Lab/DropletPalette}}
+}
+```
 ---
 ## 🚀 Project Features
 
